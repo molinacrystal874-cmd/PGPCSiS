@@ -1,0 +1,18 @@
+databases:
+  - name: pgpcsis-db
+    databaseName: pgpc_sis_db
+    user: pgpc_user
+
+services:
+  - type: web
+    name: pgpcsis-web
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pgpcsis-db
+          property: connectionString
