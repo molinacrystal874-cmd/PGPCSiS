@@ -1,0 +1,1 @@
+- [x] Update calculate_teacher_averages function in webapp/app.py to use Answer table instead of TeacherEvaluation

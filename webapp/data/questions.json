@@ -1,0 +1,22 @@
+[
+  {
+    "id": "q1",
+    "criteria": "Teaching Ability",
+    "text": "The instructor presents the subject matter clearly."
+  },
+  {
+    "id": "q2",
+    "criteria": "Professionalism",
+    "text": "The staff member adheres to the college's ethical standards."
+  },
+  {
+    "id": "q3",
+    "criteria": "Subject Knowledge",
+    "text": "The teacher demonstrates mastery of the course content."
+  },
+  {
+    "id": "e0a49b47-d6f4-4780-ab74-a8a6c281b66b",
+    "criteria": "Job Knowledge",
+    "text": "How well does the instructors mastery of the lesson/topic/subject?"
+  }
+]

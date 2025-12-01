@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ sis_title }} - Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h2>Create Student Account</h2>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST">
+                <div class="form-group">
+                    <label for="regName">Full Name:</label>
+                    <input type="text" id="regName" name="regName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regStudentId">Student ID:</label>
+                    <input type="text" id="regStudentId" name="regStudentId" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" name="regEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regProgram">Program:</label>
+                    <select id="regProgram" name="regProgram" required>
+                        <option value="">Select Program</option>
+                        <option value="BSCS">BSCS</option>
+                        <option value="BSMA">BSMA</option>
+                        <option value="BPA">BPA</option>
+                        <option value="BSCRIM">BSCRIM</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regSection">Section:</label>
+                    <input type="text" id="regSection" name="regSection" placeholder="e.g., BSCS-1A" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPass">Password:</label>
+                    <input type="password" id="regPass" name="regPass" required minlength="6">
+                </div>
+                
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+            
+            <div class="login-links">
+                <a href="{{ url_for('auth.login') }}">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

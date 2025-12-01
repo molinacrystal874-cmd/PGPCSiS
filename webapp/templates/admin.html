@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>Admin Dashboard | PADRE GARCIA POLYTECHNIC COLLEGE</title>
+        
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom CSS for fonts and active state */
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+        }
+        /* Styling for the active sidebar link (Uses fixed color for high visibility) */
+        .sidebar-link.active {
+            background-color: #3660d1; /* A fixed blue shade for active state */
+            color: #ffffff;
+            font-weight: 600;
+            border-left: 4px solid #ffffff; /* Visual indicator for active link */
+            padding-left: calc(1rem - 4px); /* Adjust padding due to border */
+        }
+        /* Program Monitoring Tabs */
+        .tab-button.active {
+            border-bottom: 2px solid #2563eb; /* Blue-600 */
+            color: #2563eb;
+            font-weight: 600;
+        }
+        /* Ensure the main body container respects dark mode on its background */
+        .app-container {
+            /* Fallback Light Mode */
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+        .dark .app-container {
+            /* Dark Mode Override */
+            background-color: #111827; /* dark:bg-gray-900 */
+        }
+    </style>
+</head>
+<body class="app-container text-gray-900"> 
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 flex-shrink-0 bg-blue-900 text-gray-800 border-r border-gray-200 p-4 relative overflow-y-auto hidden md:block">
+        <div class="text-xl font-bold mb-10 text-white">Admin Panel</div>
+
+        <p class="text-xs font-semibold uppercase text-blue-100 mb-4">SYSTEM CONTROL</p>
+        <nav class="space-y-2">
+            
+            <button onclick="switchView('dashboard', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-amber-100 hover:text-amber-700" data-view="dashboard">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12l9-9 9 9v9a2 2 0 01-2 2H5a2 2 0 01-2-2v-9zm5 0v7h8v-7h-8z"></path></svg>
+                Dashboard
+            </button>
+            
+            <!-- NEW: TEACHER MANAGEMENT BUTTON -->
+            <button onclick="switchView('teachers', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-blue-100 hover:text-blue-700" data-view="teachers">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+                Teacher Profiles
+            </button>
+
+            <button onclick="switchView('departments', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-blue-100 hover:text-blue-700" data-view="departments">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path></svg>
+                Programs & Sections
+            </button>
+
+            <button onclick="switchView('survey', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-blue-100 hover:text-blue-700" data-view="survey">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path></svg>
+                Survey Management
+            </button>
+            
+                        <button onclick="switchView('reports', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white active" data-view="reports" style="background-color: rgb(54, 96, 209); color: rgb(255, 255, 255); font-weight: 600; border-left: 4px solid rgb(255, 255, 255); padding-left: calc(-4px + 1rem);">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-3 18H8v-5h3v5zm0-7H8v-4h3v4zm5 7h-3v-2h3v2zm0-4h-3v-2h3v2zm0-4h-3V9h3v3zm-4-4V3.5L18.5 9H14z"></path>
+                            </svg>
+                            Reports &amp; Compute
+                        </button>
+            <button onclick="switchView('teaching-results', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white active" data-view="teaching-results" style="background-color: rgb(54, 96, 209); color: rgb(255, 255, 255); font-weight: 600; border-left: 4px solid rgb(255, 255, 255); padding-left: calc(-4px + 1rem);">
+    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm0 2c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm10-5h-2V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v3H2v13h20V8zm-4 11H6V5h12v14z"></path>
+    </svg>
+    Teaching Staff Result
+</button>
+            <button onclick="switchView('non-teaching-results', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-blue-100 hover:text-blue-700" data-view="non-teaching-results">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm0 2c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm8 0c-.29 0-.62.02-.97.05 1.05.51 1.77 1.33 1.95 2.55L18 17v3h4v-3c0-2.66-5.33-4-8-4z"></path></svg>
+                Non-Teaching Staff Result
+            </button>
+            
+            <button onclick="switchView('settings', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none text-white hover:bg-blue-100 hover:text-blue-700" data-view="settings">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97L2.46 14.6c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"></path></svg>
+                Settings
+            </button>
+                    </nav>
+            
+                    <div class="absolute bottom-4 left-4 right-4 pt-4 border-t border-gray-200">
+                        <a href="{{ url_for('auth.logout') }}" class="w-full text-left flex items-center p-3 rounded-lg text-sm font-medium text-white hover:bg-amber-500 transition-colors duration-200 focus:outline-none">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 17l5-5-5-5M21 12H9" />
+                            </svg>
+                            Logout
+                        </a>
+                    </div>
+                </aside>
+            
+                <!-- Main Content Area -->
+                <div class="flex-grow flex flex-col">
+                    
+                    <header class="bg-white p-4 border-b border-gray-200 flex justify-between items-center shadow-sm">
+    
+    <div class="flex items-center space-x-3">
+        <img src="/static/plogo.png" alt="Padre Garcia Polytechnic College Logo" class="h-10 w-10 object-contain">
+        
+        <h1 class="text-lg font-semibold text-gray-800">
+            PADRE GARCIA POLYTECHNIC COLLEGE
+        </h1>
+    </div>
+    <div class="flex items-center">
+        <button id="mobile-menu-button" class="md:hidden text-gray-800 hover:text-blue-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </div>
+</header>
+            
+                    <main id="content-area" class="flex-grow p-4 md:p-8 overflow-y-auto space-y-6 bg-gradient-to-b from-blue-200 to-blue-900">
+            
+                        <!-- Flash Messages - No major changes, Tailwind handles dynamic colors well -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                <div class="space-y-2">
+                                {% for category, message in messages %}
+                                    <div class="p-3 rounded-lg shadow-sm text-sm 
+                                        {% if category == 'success' %} bg-green-100 text-green-700 border border-green-200
+                                        {% elif category == 'warning' %} bg-orange-100 text-orange-700 border border-orange-200
+                                        {% elif category == 'error' %} bg-red-100 text-red-700 border border-red-200
+                                        {% else %} bg-blue-100 text-blue-700 border border-blue-200 {% endif %}
+                                        " role="alert">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+            
+                        <!-- DASHBOARD VIEW -->
+                        <section id="view-dashboard" class="space-y-6">
+                            <h2 class="text-3xl font-extrabold text-white">Welcome, Deans</h2>
+            
+                            <!-- Survey Completion Stats -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="md:col-span-1 bg-white p-6 rounded-lg shadow-sm">
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Overall Completion</h3>
+                                    <canvas id="completionPieChart"></canvas>
+                                </div>
+                                <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm">
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Completion by Department</h3>
+                                    <canvas id="completionBarChart"></canvas>
+                                </div>
+                            </div>
+            
+            
+                            <div class="bg-blue-100 p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">AD</div>
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-900">System Administrators</p>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <span class="mr-2">Role: Two Deans</span>
+                                            <span class="flex items-center">
+                                                {% if survey_status and survey_status.is_active %}
+                                                <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                                                System Status: <span class="font-medium text-green-600 ml-1">Survey Active</span>
+                                                {% else %}
+                                                <span class="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
+                                                System Status: <span class="font-medium text-red-600 ml-1">Survey Inactive</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Survey Management Quick Access</h3>
+                                <p class="text-gray-600 mb-6">Control the structure, criteria, and content of all evaluation forms.</p>
+                                
+                                <div class="flex flex-wrap gap-4">
+                                    <button onclick="switchView('survey', document.querySelector('[data-view=&quot;survey&quot;]'))" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c-.825 0-1.5.675-1.5 1.5v4.5H6c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5h4.5v4.5c0 .825.675 1.5 1.5 1.5s1.5-.675 1.5-1.5V13.5H18c.825 0 1.5-.675 1.5-1.5s-.675-1.5-1.5-1.5h-4.5V6c0-.825-.675-1.5-1.5-1.5z"></path></svg>
+                                        Manage Questions
+                                    </button>
+                                    {% if survey_status and survey_status.is_active %}
+                                    <button onclick="handleAction('deactivate_survey', '/survey/deactivate', 'Deactivate Survey')" class="px-5 py-2 bg-orange-300 text-white rounded-lg hover:bg-orange-400 transition-colors duration-200">
+                                        Deactivate Surveys
+                                    </button>
+                                    {% else %}
+                                                                                                             <button onclick="handleAction('activate_survey', '/survey/activate', 'Activate Survey')" class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+                                                                                                                 Activate Surveys
+                                                                                                             </button>
+                                                                                                             {% endif %}
+                                                                                                         </div>
+                                                                                                     </div>                            <!-- Completion by Department -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Student Management</h3>
+                                <p class="text-gray-600 mb-4">Manage student data and send reminders to students who have not completed the survey.</p>
+                                <div class="flex items-center gap-4 mb-4">
+                                    <select id="program-filter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="">All Programs</option>
+                                        {% for program in mock_programs %}
+                                        <option value="{{ program }}">{{ program }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button onclick="sendReminders()" class="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
+                                        Send Reminders
+                                    </button>
+                                </div>
+                                <div class="border-t pt-4">
+                                    <p class="text-sm text-gray-600 mb-2">Sync CSV student data to enable login for new students:</p>
+                                    <button onclick="syncCsvStudents()" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        Sync CSV to Database
+                                    </button>
+                                </div>
+                            </div>
+            
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Reports & Computation Quick Access</h3>
+                                <p class="text-gray-600 mb-4">Manage staff rankings and generate reports.</p>
+                                <div class="flex flex-wrap gap-4">
+                                        <button onclick="switchView('reports', document.querySelector('[data-view=&quot;reports&quot;]'))" class="flex items-center px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors duration-200">
+                                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>
+                                            Go to Ranking/Reports
+                                        </button>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- NEW: TEACHER MANAGEMENT VIEW -->
+                        <section id="view-teachers" class="space-y-6 hidden">
+                            <h2 class="text-3xl font-extrabold text-white mb-6">Teacher Profile Management</h2>
+            
+                            <!-- Add New Teacher Button -->
+                            <div class="bg-blue-100 p-6 rounded-lg shadow-sm mb-6">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-semibold text-gray-900">Registered Faculty and Staff</h3>
+                                    <button onclick="openAddTeacherModal()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c-.825 0-1.5.675-1.5 1.5v4.5H6c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5h4.5v4.5c0 .825.675 1.5 1.5 1.5s1.5-.675 1.5-1.5V13.5H18c.825 0 1.5-.675 1.5-1.5s-.675-1.5-1.5-1.5h-4.5V6c0-.825-.675-1.5-1.5-1.5z"></path></svg>
+                                        Add New Teacher
+                                    </button>
+                                </div>
+                            </div>
+            
+                            <!-- Teacher List Table -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="overflow-x-auto" id="teacher-management">
+                                    {% if teachers or non_teaching_staff %}
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% for teacher in teachers %}
+                                            <tr id="teacher-{{ teacher.id }}">
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            <img class="h-10 w-10 rounded-full" src="{{ teacher.image_url }}" alt="{{ teacher.name }} profile" onerror="this.onerror=null; this.src='https://placehold.co/40x40/5070ff/ffffff?text=PG'">
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-medium text-gray-900">{{ teacher.name }}</div>
+                                                            <div class="text-xs text-gray-500">
+                                                                {% if teacher.departments_assigned %}
+                                                                    {{ teacher.departments_assigned|map(attribute='name')|join(', ') }}
+                                                                {% else %}
+                                                                    N/A
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs rounded-lg bg-blue-100 text-blue-800">Teaching</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                                    <button onclick="openEditTeacherModal('{{ teacher.id }}','{{ teacher.name|e }}', '{{ teacher.departments|e }}', '{{ teacher.sections|e }}', '{{ teacher.image_url|e }}')" class="text-indigo-600 hover:text-indigo-900 px-3 py-1 border border-indigo-200 rounded-md transition-colors" title="Edit Teacher">Edit</button>
+                                                    <a href="{{ url_for('views.generate_individual_staff_report', teacher_id=teacher.id) }}" class="text-green-600 hover:text-green-900 px-3 py-1 border border-green-200 rounded-md transition-colors" title="Generate Individual Report with Comments">Report</a>
+                                                    <form method="POST" action="{{ url_for('views.delete_teacher_profile', teacher_id_str=teacher.id)}}" class="inline-block"><button type="submit" onclick="return confirm('Are you sure you want to delete the profile for {{ teacher.name|e }}?');" class="text-red-600 hover:text-red-900 px-3 py-1 border border-red-200 rounded-md transition-colors" title="Delete Teacher">Delete</button></form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% for staff in non_teaching_staff %}
+                                            <tr id="teacher-{{ staff.id }}">
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            <img class="h-10 w-10 rounded-full" src="{{ staff.image_url }}" alt="{{ staff.name }} profile" onerror="this.onerror=null; this.src='https://placehold.co/40x40/5070ff/ffffff?text=PG'">
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-medium text-gray-900">{{ staff.name }}</div>
+                                                            <div class="text-xs text-gray-500">
+                                                                {% if staff.departments_assigned %}
+                                                                    {{ staff.departments_assigned|map(attribute='name')|join(', ') }}
+                                                                {% else %}
+                                                                    N/A
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs rounded-lg bg-green-100 text-green-800">Non-Teaching</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                                    <button onclick="openEditTeacherModal('{{ staff.id }}','{{ staff.name|e }}', '{{ staff.departments|e }}', '{{ staff.sections|e }}', '{{ staff.image_url|e }}')" class="text-indigo-600 hover:text-indigo-900 px-3 py-1 border border-indigo-200 rounded-md transition-colors" title="Edit Staff">Edit</button>
+                                                    <a href="{{ url_for('views.generate_individual_staff_report', teacher_id=staff.id) }}" class="text-green-600 hover:text-green-900 px-3 py-1 border border-green-200 rounded-md transition-colors" title="Generate Individual Report with Comments">Report</a>
+                                                    <form method="POST" action="{{ url_for('views.delete_teacher_profile', teacher_id_str=staff.id)}}" class="inline-block"><button type="submit" onclick="return confirm('Are you sure you want to delete the profile for {{ staff.name|e }}?');" class="text-red-600 hover:text-red-900 px-3 py-1 border border-red-200 rounded-md transition-colors" title="Delete Staff">Delete</button></form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    {% else %}
+                                        <p class="text-center py-8 text-gray-500">No teacher profiles found. Click "Add New Teacher" to begin.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- DEPARTMENTS/PROGRAMS MANAGEMENT VIEW -->
+                        <section id="view-departments" class="space-y-6 hidden">
+                            <h2 class="text-3xl font-extrabold text-white mb-6">Programs & Sections Management</h2>
+            
+                            <!-- Add New Department/Section Buttons -->
+                            <div class="bg-blue-100 p-6 rounded-lg shadow-sm mb-6">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-semibold text-gray-900">Manage Academic Programs and Sections</h3>
+                                    <div class="flex gap-3">
+                                        <button onclick="openAddDepartmentModal()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c-.825 0-1.5.675-1.5 1.5v4.5H6c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5h4.5v4.5c0 .825.675 1.5 1.5 1.5s1.5-.675 1.5-1.5V13.5H18c.825 0 1.5-.675 1.5-1.5s-.675-1.5-1.5-1.5h-4.5V6c0-.825-.675-1.5-1.5-1.5z"></path></svg>
+                                            Add Program
+                                        </button>
+                                        <button onclick="openAddSectionModal()" class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c-.825 0-1.5.675-1.5 1.5v4.5H6c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5h4.5v4.5c0 .825.675 1.5 1.5 1.5s1.5-.675 1.5-1.5V13.5H18c.825 0 1.5-.675 1.5-1.5s-.675-1.5-1.5-1.5h-4.5V6c0-.825-.675-1.5-1.5-1.5z"></path></svg>
+                                            Add Section
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <!-- Departments and Sections Table -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Current Programs and Sections</h3>
+                                <div class="overflow-x-auto" id="departments-table-container">
+                                    <table class="min-w-full divide-y divide-gray-200" id="departments-table">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sections</th>
+                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200" id="departments-tbody">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+            
+            
+                        <!-- SURVEY MANAGEMENT VIEW -->
+                        <section id="view-survey" class="space-y-6 hidden">
+                            <h2 class="text-3xl font-extrabold text-white">Survey Management</h2>
+            
+                            <!-- Survey Activation -->
+                            <div class="bg-blue-100 p-6 rounded-lg shadow-sm mb-6">
+                                <p class="text-gray-600 mb-4">Note: Activating a survey makes it available for students to take.</p>
+                            </div>
+                            
+                            <!-- Survey List -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-900">Surveys</h3>
+                                    <button onclick="openCreateSurveyModal()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        Create New Survey
+                                    </button>
+                                </div>
+            
+                                <!-- Survey Table -->
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% for survey in surveys %}
+                                            <tr data-survey-id="{{ survey.id }}">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ survey.title }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ survey.semester }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    {% if survey.is_active %}
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 status-span">Active</span>
+                                                    {% else %}
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 status-span">Inactive</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                                    <a href="{{ url_for('views.manage_questions') }}" class="text-indigo-600 hover:text-indigo-900">Manage Questions</a>
+                                                    {% if survey.is_active %}
+                                                        <button onclick="deactivateSurvey('{{ survey.id }}', this)" class="text-orange-600 hover:text-orange-900 px-2 py-1 border border-orange-200 rounded action-button" data-survey-id="{{ survey.id }}">Deactivate</button>
+                                                    {% else %}
+                                                        <button onclick="activateSurvey('{{ survey.id }}', this)" class="text-green-600 hover:text-green-900 px-2 py-1 border border-green-200 rounded action-button" data-survey-id="{{ survey.id }}">Activate</button>
+                                                    {% endif %}
+                                                    <form method="POST" action="{{ url_for('views.delete_survey', survey_identifier=survey.id) }}" class="inline-block" onsubmit="return confirm('Are you sure? This will delete the survey and all its questions.');">
+                                                        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+            
+                        <!-- REPORTS & COMPUTATION VIEW (RESTORED) -->
+                        <section id="view-reports" class="space-y-6 hidden">
+                            <h2 class="text-3xl font-extrabold text-white">Reports & Computation</h2>
+
+                            <div class="flex justify-end gap-4 mb-4">
+                                
+                                <a href="{{ url_for('views.generate_results_pdf') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Generate Results PDF</a>
+                                <button onclick="handleRankingPost('teaching')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Post Teaching Rankings</button>
+                                <button onclick="handleRankingPost('non_teaching')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Post Non-Teaching Rankings</button>
+                            </div>
+
+                            <!-- Teaching Staff Rankings -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Teaching Staff Rankings</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher Name</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evaluation Count</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% if teacher_averages %}
+                                                {% for teacher in teacher_averages %}
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ loop.index }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ teacher.name }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ teacher.department }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ teacher.score }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ teacher.count }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-8 text-gray-500">No evaluation data available for teaching staff.</td>
+                                                </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Non-Teaching Staff Rankings -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-4">Non-Teaching Staff Rankings</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff Name</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evaluation Count</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% if non_teaching_staff_averages %}
+                                                {% for staff in non_teaching_staff_averages %}
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ loop.index }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ staff.name }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ staff.department }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ staff.score }}</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ staff.count }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-8 text-gray-500">No evaluation data available for non-teaching staff.</td>
+                                                </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+
+                                                <section id="view-teaching-results" class="space-y-8 hidden">
+                            <h2 class="text-3xl font-extrabold text-white">Teaching Staff Results</h2>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex justify-end mb-4">
+                                    <a href="{{ url_for('views.generate_detailed_pdf_report', staff_type='teaching') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download PDF</a>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">NO</th>
+                                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">Staff Name</th>
+                                                {% for criterion in teaching_criteria %}
+                                                    <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">{{ criterion }}</th>
+                                                {% endfor %}
+                                                <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">TOTAL</th>
+                                                <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">RANK</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% for staff in teaching_results %}
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap border border-gray-300">{{ loop.index }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap border border-gray-300">{{ staff.StaffName }}</td>
+                                                {% for criterion in teaching_criteria %}
+                                                    <td class="px-4 py-2 whitespace-nowrap text-center border border-gray-300">{{ '%.2f'|format(staff[criterion]) }}</td>
+                                                {% endfor %}
+                                                <td class="px-4 py-2 whitespace-nowrap text-center font-bold border border-gray-300">{{ '%.2f'|format(staff.TotalScore) }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-center font-bold border border-gray-300">{{ staff.Rank }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    
+                        <section id="view-non-teaching-results" class="space-y-8 hidden">
+                            <h2 class="text-3xl font-extrabold text-white">Non-Teaching Staff Results</h2>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex justify-end mb-4">
+                                    <a href="{{ url_for('views.generate_detailed_pdf_report', staff_type='non_teaching') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Download PDF</a>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">NO</th>
+                                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">Staff Name</th>
+                                                {% for criterion in non_teaching_criteria %}
+                                                    <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">{{ criterion }}</th>
+                                                {% endfor %}
+                                                <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">TOTAL</th>
+                                                <th class="px-4 py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border border-gray-300">RANK</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            {% for staff in non_teaching_results %}
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap border border-gray-300">{{ loop.index }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap border border-gray-300">{{ staff.StaffName }}</td>
+                                                {% for criterion in non_teaching_criteria %}
+                                                    <td class="px-4 py-2 whitespace-nowrap text-center border border-gray-300">{{ '%.2f'|format(staff[criterion]) }}</td>
+                                                {% endfor %}
+                                                <td class="px-4 py-2 whitespace-nowrap text-center font-bold border border-gray-300">{{ '%.2f'|format(staff.TotalScore) }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-center font-bold border border-gray-300">{{ staff.Rank }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- SETTINGS VIEW -->
+                        <section id="view-settings" class="space-y-6 hidden">
+                            <h2 class="text-3xl font-extrabold text-white mb-6">Account Settings</h2>
+                            <p class="text-blue-100 mb-6">Manage your account information and security</p>
+                            
+                            <!-- Profile Information Section -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                                            AD
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-semibold text-gray-900">{{ admin_info.full_name }}</h3>
+                                            <p class="text-gray-600">{{ admin_info.email }}</p>
+                                            <span class="inline-block px-3 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full mt-1">System Administrator</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="openChangePhotoModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                                        Change Photo
+                                    </button>
+                                </div>
+                                
+                                <form id="profileForm" onsubmit="updateProfile(event)">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                            <input type="text" id="firstName" name="firstName" value="{{ admin_info.first_name }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                            <input type="text" id="lastName" name="lastName" value="{{ admin_info.last_name }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                        <div class="flex">
+                                            <input type="email" id="email" name="email" value="{{ admin_info.email }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <button type="button" class="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-l-0 border-gray-300 rounded-r-lg hover:bg-blue-100 transition-colors">
+                                                <svg class="w-4 h-4 mr-1 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                                                Verify
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Security Section -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <svg class="w-5 h-5 mr-2 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                    <h3 class="text-lg font-semibold text-gray-900">Security</h3>
+                                </div>
+                                <p class="text-gray-600 mb-6">Manage your password and security preferences</p>
+                                
+                                <form id="passwordForm" onsubmit="updatePassword(event)">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                                            <input type="password" id="currentPassword" name="currentPassword" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                            <input type="password" id="newPassword" name="newPassword" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                        </div>
+                                        
+                                        <div class="pt-4">
+                                            <button type="submit" class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                                Update Password
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Save Changes Section -->
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="cancelChanges()" class="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="button" onclick="saveAllChanges()" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                    <svg class="w-4 h-4 mr-2 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L9 11.586l-1.293-1.293z"></path></svg>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </section>
+                        
+                        <!-- MODAL: Change Photo -->
+                        <div id="changePhotoModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'changePhotoModal') closeChangePhotoModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Change Profile Photo</h3>
+                                <form id="photoForm" onsubmit="uploadPhoto(event)">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Select New Photo</label>
+                                        <input type="file" id="photoFile" name="photoFile" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeChangePhotoModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Upload Photo
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- MODAL: Add New Teacher -->
+                        <div id="addTeacherModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'addTeacherModal') closeAddTeacherModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Add New Staff Profile</h3>
+                                <form method="POST" action="{{ url_for('views.save_teacher_profile') }}" enctype="multipart/form-data">
+                                    <input type="hidden" name="teacher_id" value="new">
+                    
+                                    <!-- Staff Type Selection -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Staff Type</label>
+                                        <select id="staff_type_selector" name="staff_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg" onchange="toggleStaffFields()">
+                                            <option value="teaching">Teaching Staff</option>
+                                            <option value="non_teaching">Non-Teaching Staff</option>
+                                        </select>
+                                    </div>
+                    
+                                    <!-- Fields for Teaching Staff (Original Form) -->
+                                    <div id="teaching_fields">
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                            <input type="text" name="name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                            <input type="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Departments/Programs</label>
+                                            <div id="departments-container" class="space-y-3">
+                                                <div class="department-group">
+                                                    <label class="inline-flex items-center font-medium">
+                                                        <input type="checkbox" name="departments" value="BSCS" class="rounded text-blue-600 department-checkbox" onchange="toggleAddSections('BSCS', this.checked)">
+                                                        <span class="ml-2 text-sm">BSCS</span>
+                                                    </label>
+                                                    <div id="add-sections-BSCS" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                        <!-- BSCS Sections -->
+                                                    </div>
+                                                </div>
+                                                <div class="department-group">
+                                                    <label class="inline-flex items-center font-medium">
+                                                        <input type="checkbox" name="departments" value="BPA" class="rounded text-blue-600 department-checkbox" onchange="toggleAddSections('BPA', this.checked)">
+                                                        <span class="ml-2 text-sm">BPA</span>
+                                                    </label>
+                                                    <div id="add-sections-BPA" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                        <!-- BPA Sections -->
+                                                    </div>
+                                                </div>
+                                                <div class="department-group">
+                                                    <label class="inline-flex items-center font-medium">
+                                                        <input type="checkbox" name="departments" value="BSCRIM" class="rounded text-blue-600 department-checkbox" onchange="toggleAddSections('BSCRIM', this.checked)">
+                                                        <span class="ml-2 text-sm">BSCRIM</span>
+                                                    </label>
+                                                    <div id="add-sections-BSCRIM" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                        <!-- BSCRIM Sections -->
+                                                    </div>
+                                                </div>
+                                                <div class="department-group">
+                                                    <label class="inline-flex items-center font-medium">
+                                                        <input type="checkbox" name="departments" value="BSMA" class="rounded text-blue-600 department-checkbox" onchange="toggleAddSections('BSMA', this.checked)">
+                                                        <span class="ml-2 text-sm">BSMA</span>
+                                                    </label>
+                                                    <div id="add-sections-BSMA" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                        <!-- BSMA Sections -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Fields for Non-Teaching Staff -->
+                                    <div id="non_teaching_fields" style="display: none;">
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                            <input type="text" name="non_teaching_name" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                            <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Role/Position</label>
+                                            <input type="text" name="role_position" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image (Optional)</label>
+                                        <input type="file" name="image_file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    </div>
+                    
+                                    <div class="flex justify-end space-x-3 mt-6">
+                                        <button type="button" onclick="closeAddTeacherModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" onclick="return validateTeachingStaff()">Save Profile</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                        <!-- MODAL: Edit Teacher Profile -->
+                        <div id="editTeacherModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'editTeacherModal') closeEditTeacherModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Edit Teacher Profile</h3>
+                                <form id="editTeacherForm" method="POST" action="{{ url_for('views.save_teacher_profile') }}" enctype="multipart/form-data">
+                                    <input type="hidden" id="teacher_id_edit" name="teacher_id">
+                                    <input type="hidden" name="staff_type" value="teaching">
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                        <input type="text" id="teacher_name_edit" name="name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" id="teacher_email_edit" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Departments/Programs</label>
+                                        <div id="edit-departments-container" class="space-y-3">
+                                            <div class="department-group">
+                                                <label class="inline-flex items-center font-medium">
+                                                    <input type="checkbox" name="departments" value="BSCS" class="rounded text-blue-600 department-checkbox" onchange="toggleEditSections('BSCS', this.checked)">
+                                                    <span class="ml-2 text-sm">BSCS</span>
+                                                </label>
+                                                <div id="edit-sections-BSCS" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                    <!-- BSCS Sections -->
+                                                </div>
+                                            </div>
+                                            <div class="department-group">
+                                                <label class="inline-flex items-center font-medium">
+                                                    <input type="checkbox" name="departments" value="BPA" class="rounded text-blue-600 department-checkbox" onchange="toggleEditSections('BPA', this.checked)">
+                                                    <span class="ml-2 text-sm">BPA</span>
+                                                </label>
+                                                <div id="edit-sections-BPA" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                    <!-- BPA Sections -->
+                                                </div>
+                                            </div>
+                                            <div class="department-group">
+                                                <label class="inline-flex items-center font-medium">
+                                                    <input type="checkbox" name="departments" value="BSCRIM" class="rounded text-blue-600 department-checkbox" onchange="toggleEditSections('BSCRIM', this.checked)">
+                                                    <span class="ml-2 text-sm">BSCRIM</span>
+                                                </label>
+                                                <div id="edit-sections-BSCRIM" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                    <!-- BSCRIM Sections -->
+                                                </div>
+                                            </div>
+                                            <div class="department-group">
+                                                <label class="inline-flex items-center font-medium">
+                                                    <input type="checkbox" name="departments" value="BSMA" class="rounded text-blue-600 department-checkbox" onchange="toggleEditSections('BSMA', this.checked)">
+                                                    <span class="ml-2 text-sm">BSMA</span>
+                                                </label>
+                                                <div id="edit-sections-BSMA" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                                    <!-- BSMA Sections -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image (Optional)</label>
+                                        <input type="file" name="image_file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    </div>
+                    
+                                    <div class="flex justify-end space-x-3 mt-6">
+                                        <button type="button" onclick="closeEditTeacherModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Update Profile</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                    
+                        <!-- MODAL: Add New Question -->
+                        <div id="addQuestionModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'addQuestionModal') closeAddQuestionModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Add New Evaluation Question</h3>
+                                <form method="POST" action="{{ url_for('views.add_question') }}">
+                                    <div class="mb-4">
+                                        <label for="criteria" class="block text-sm font-medium text-gray-700 mb-1">Criteria/Category</label>
+                                        <input type="text" id="criteria" name="criteria" required 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="question_text_add" class="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
+                                        <textarea id="question_text_add" name="question_text" rows="3" required 
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeAddQuestionModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Save Question
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                        <!-- MODAL: Edit Question -->
+                        <div id="editQuestionModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'editQuestionModal') closeEditQuestionModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Edit Evaluation Question</h3>
+                                <form id="editQuestionForm" method="POST" action="">
+                                    <input type="hidden" id="edit_question_id" name="question_id">
+                                    <div class="mb-4">
+                                        <label for="edit_criteria" class="block text-sm font-medium text-gray-700 mb-1">Criteria/Category</label>
+                                        <input type="text" id="edit_criteria" name="criteria" required 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="edit_question_text" class="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
+                                        <textarea id="edit_question_text" name="question_text" rows="3" required 
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeEditQuestionModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                                            Update Question
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW MODAL: Edit Staff Ranking -->
+                        <div id="editRankingModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'editRankingModal') closeEditRankingModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Edit Ranking Score</h3>
+                                <form id="editRankingForm" onsubmit="event.preventDefault(); submitRankingEdit()">
+                                    <p class="text-lg font-medium text-gray-800 mb-4" id="ranking_staff_name">Staff Name</p>
+                                    <input type="hidden" id="ranking_staff_id">
+                                    
+                                    <div class="mb-4">
+                                        <label for="ranking_new_score" class="block text-sm font-medium text-gray-700 mb-1">New Ranking Score (1.00 - 5.00)</label>
+                                        <input type="number" id="ranking_new_score" step="0.01" min="1.00" max="5.00" required 
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeEditRankingModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                                            Update Score
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- MODAL: Create New Survey -->
+                        <div id="createSurveyModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'createSurveyModal') closeCreateSurveyModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Create New Survey</h3>
+                                <form method="POST" action="{{ url_for('views.create_survey') }}">
+                                                                         <div class="mb-4">
+                                                                            <label for="survey_title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                                                            <input type="text" id="survey_title" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                                                        </div>
+                                                                        <div class="mb-4">
+                                                                            <label for="staff_type" class="block text-sm font-medium text-gray-700 mb-1">Staff Type</label>
+                                                                            <select id="staff_type" name="staff_type" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                                                                <option value="teaching">Teaching</option>
+                                                                                <option value="non_teaching">Non-Teaching</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="mb-4">                                        <label for="survey_semester" class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
+                                        <select id="survey_semester" name="semester" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="1st Semester">1st Semester</option>
+                                            <option value="2nd Semester">2nd Semester</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="survey_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <textarea id="survey_description" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeCreateSurveyModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Create Survey
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- MODAL: Add Department -->
+                        <div id="addDepartmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'addDepartmentModal') closeAddDepartmentModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Add New Program</h3>
+                                <form id="addDepartmentForm" onsubmit="event.preventDefault(); submitDepartment()">
+                                    <div class="mb-4">
+                                        <label for="department_name" class="block text-sm font-medium text-gray-700 mb-1">Program Name</label>
+                                        <input type="text" id="department_name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., BSCS, BSIT, BPA">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeAddDepartmentModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Add Program
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- MODAL: Add Section -->
+                        <div id="addSectionModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'addSectionModal') closeAddSectionModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Add New Section</h3>
+                                <form id="addSectionForm" onsubmit="event.preventDefault(); submitSection()">
+                                    <div class="mb-4">
+                                        <label for="section_department" class="block text-sm font-medium text-gray-700 mb-1">Program</label>
+                                        <select id="section_department" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select a program...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="section_name" class="block text-sm font-medium text-gray-700 mb-1">Section Name</label>
+                                        <input type="text" id="section_name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 1A, 2B, 3C">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeAddSectionModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                                            Add Section
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- MODAL: Edit Department -->
+                        <div id="editDepartmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'editDepartmentModal') closeEditDepartmentModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Edit Program</h3>
+                                <form id="editDepartmentForm" onsubmit="event.preventDefault(); updateDepartment()">
+                                    <input type="hidden" id="edit_department_id">
+                                    <div class="mb-4">
+                                        <label for="edit_department_name" class="block text-sm font-medium text-gray-700 mb-1">Program Name</label>
+                                        <input type="text" id="edit_department_name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeEditDepartmentModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                            Update Program
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- MODAL: Edit Section -->
+                        <div id="editSectionModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50" onclick="if (event.target.id === 'editSectionModal') closeEditSectionModal()">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 transform transition-all duration-300">
+                                <h3 class="text-xl font-bold mb-4">Edit Section</h3>
+                                <form id="editSectionForm" onsubmit="event.preventDefault(); updateSection()">
+                                    <input type="hidden" id="edit_section_id">
+                                    <div class="mb-4">
+                                        <label for="edit_section_name" class="block text-sm font-medium text-gray-700 mb-1">Section Name</label>
+                                        <input type="text" id="edit_section_name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" onclick="closeEditSectionModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                                            Update Section
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                        <!-- Replaced alert() with a custom modal for better UX -->
+                        <div id="rankingAlertModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-xs p-6 text-center">
+                                <h4 class="text-lg font-bold mb-3">Notice</h4>
+                                <p id="rankingAlertMessage" class="text-sm text-gray-700 mb-4">Message content.</p>
+                                <button onclick="document.getElementById('rankingAlertModal').classList.add('hidden')" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    
+                    
+                        <script>
+                            // === JAVASCRIPT LOGIC ===
+                            
+                            // --- Survey Modal Functions ---
+                            function openCreateSurveyModal() {
+                                document.getElementById('createSurveyModal').classList.remove('hidden');
+                            }
+                            function closeCreateSurveyModal() {
+                                document.getElementById('createSurveyModal').classList.add('hidden');
+                            }
+
+                            // --- Department/Section Management Functions ---
+                            function openAddDepartmentModal() {
+                                document.getElementById('addDepartmentModal').classList.remove('hidden');
+                            }
+                            function closeAddDepartmentModal() {
+                                document.getElementById('addDepartmentModal').classList.add('hidden');
+                                document.getElementById('addDepartmentForm').reset();
+                            }
+
+                            function openAddSectionModal() {
+                                loadDepartmentsForSection();
+                                document.getElementById('addSectionModal').classList.remove('hidden');
+                            }
+                            function closeAddSectionModal() {
+                                document.getElementById('addSectionModal').classList.add('hidden');
+                                document.getElementById('addSectionForm').reset();
+                            }
+
+                            function openEditDepartmentModal(id, name) {
+                                document.getElementById('edit_department_id').value = id;
+                                document.getElementById('edit_department_name').value = name;
+                                document.getElementById('editDepartmentModal').classList.remove('hidden');
+                            }
+                            function closeEditDepartmentModal() {
+                                document.getElementById('editDepartmentModal').classList.add('hidden');
+                            }
+
+                            function openEditSectionModal(id, name) {
+                                document.getElementById('edit_section_id').value = id;
+                                document.getElementById('edit_section_name').value = name;
+                                document.getElementById('editSectionModal').classList.remove('hidden');
+                            }
+                            function closeEditSectionModal() {
+                                document.getElementById('editSectionModal').classList.add('hidden');
+                            }
+
+                            function loadDepartmentsTable() {
+                                fetch('/api/departments')
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(departments => {
+                                        console.log('Loaded departments:', departments);
+                                        const tbody = document.getElementById('departments-tbody');
+                                        tbody.innerHTML = '';
+                                        
+                                        if (!departments || departments.length === 0) {
+                                            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-gray-500">No departments found.</td></tr>';
+                                            return;
+                                        }
+                                        
+                                        departments.forEach(dept => {
+                                            const sectionsHtml = dept.sections && dept.sections.length > 0 ? 
+                                                dept.sections.map(section => 
+                                                    `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 mr-1 mb-1">
+                                                        ${section.name}
+                                                        <button onclick="editSection('${section.id}', '${section.name}')" class="ml-1 text-blue-600 hover:text-blue-800" title="Edit Section">
+                                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
+                                                        </button>
+                                                        <button onclick="deleteSection('${section.id}', '${section.name}')" class="ml-1 text-red-600 hover:text-red-800" title="Delete Section">
+                                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                        </button>
+                                                    </span>`
+                                                ).join('') : '<span class="text-gray-400">No sections</span>';
+                                            
+                                            const row = document.createElement('tr');
+                                            row.innerHTML = `
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${dept.name}</td>
+                                                <td class="px-6 py-4 text-sm text-gray-500">${sectionsHtml}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                                    <button onclick="editDepartment('${dept.id}', '${dept.name}')" class="text-indigo-600 hover:text-indigo-900 px-3 py-1 border border-indigo-200 rounded-md transition-colors" title="Edit Program">Edit</button>
+                                                    <button onclick="deleteDepartment('${dept.id}', '${dept.name}')" class="text-red-600 hover:text-red-900 px-3 py-1 border border-red-200 rounded-md transition-colors" title="Delete Program">Delete</button>
+                                                </td>
+                                            `;
+                                            tbody.appendChild(row);
+                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error('Error loading departments:', error);
+                                        const tbody = document.getElementById('departments-tbody');
+                                        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-red-500">Error loading departments. Please refresh the page.</td></tr>';
+                                    });
+                            }
+
+                            function loadDepartmentsForSection() {
+                                fetch('/api/departments')
+                                    .then(response => response.json())
+                                    .then(departments => {
+                                        const select = document.getElementById('section_department');
+                                        select.innerHTML = '<option value="">Select a program...</option>';
+                                        departments.forEach(dept => {
+                                            const option = document.createElement('option');
+                                            option.value = dept.id;
+                                            option.textContent = dept.name;
+                                            select.appendChild(option);
+                                        });
+                                    })
+                                    .catch(error => console.error('Error loading departments for section:', error));
+                            }
+
+                            function submitDepartment() {
+                                const name = document.getElementById('department_name').value.trim();
+                                if (!name) {
+                                    alert('Please enter a program name.');
+                                    return;
+                                }
+                                
+                                fetch('/departments', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: name })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        closeAddDepartmentModal();
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error creating department:', error);
+                                    alert('❌ Error creating program.');
+                                });
+                            }
+
+                            function submitSection() {
+                                const departmentId = document.getElementById('section_department').value;
+                                const name = document.getElementById('section_name').value.trim();
+                                
+                                if (!departmentId || !name) {
+                                    alert('Please select a program and enter a section name.');
+                                    return;
+                                }
+                                
+                                fetch('/sections', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: name, department_id: departmentId })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        closeAddSectionModal();
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error creating section:', error);
+                                    alert('❌ Error creating section.');
+                                });
+                            }
+
+                            function editDepartment(id, name) {
+                                openEditDepartmentModal(id, name);
+                            }
+
+                            function updateDepartment() {
+                                const id = document.getElementById('edit_department_id').value;
+                                const name = document.getElementById('edit_department_name').value.trim();
+                                
+                                if (!name) {
+                                    alert('Please enter a program name.');
+                                    return;
+                                }
+                                
+                                fetch(`/departments/${id}`, {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: name })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        closeEditDepartmentModal();
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating department:', error);
+                                    alert('❌ Error updating program.');
+                                });
+                            }
+
+                            function deleteDepartment(id, name) {
+                                if (!confirm(`Are you sure you want to delete the program "${name}"? This will also delete all its sections if they have no assigned teachers.`)) {
+                                    return;
+                                }
+                                
+                                fetch(`/departments/${id}`, {
+                                    method: 'DELETE'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting department:', error);
+                                    alert('❌ Error deleting program.');
+                                });
+                            }
+
+                            function editSection(id, name) {
+                                openEditSectionModal(id, name);
+                            }
+
+                            function updateSection() {
+                                const id = document.getElementById('edit_section_id').value;
+                                const name = document.getElementById('edit_section_name').value.trim();
+                                
+                                if (!name) {
+                                    alert('Please enter a section name.');
+                                    return;
+                                }
+                                
+                                fetch(`/sections/${id}`, {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: name })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        closeEditSectionModal();
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating section:', error);
+                                    alert('❌ Error updating section.');
+                                });
+                            }
+
+                            function deleteSection(id, name) {
+                                if (!confirm(`Are you sure you want to delete the section "${name}"?`)) {
+                                    return;
+                                }
+                                
+                                fetch(`/sections/${id}`, {
+                                    method: 'DELETE'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ ' + data.message);
+                                        loadDepartmentsTable();
+                                        updateTeacherFormDepartments();
+                                    } else {
+                                        alert('❌ ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting section:', error);
+                                    alert('❌ Error deleting section.');
+                                });
+                            }
+
+                            function updateTeacherFormDepartments() {
+                                // Update both add and edit teacher forms with new departments/sections
+                                fetch('/api/departments')
+                                    .then(response => response.json())
+                                    .then(departments => {
+                                        updateDepartmentCheckboxes('departments-container', departments);
+                                        updateDepartmentCheckboxes('edit-departments-container', departments);
+                                    })
+                                    .catch(error => console.error('Error updating teacher forms:', error));
+                            }
+
+                            function updateDepartmentCheckboxes(containerId, departments) {
+                                const container = document.getElementById(containerId);
+                                if (!container) return;
+                                
+                                container.innerHTML = '';
+                                departments.forEach(dept => {
+                                    // Skip Admin department for teaching staff forms
+                                    if (dept.name === 'Admin') return;
+                                    
+                                    const isEdit = containerId.includes('edit');
+                                    const prefix = isEdit ? 'edit' : 'add';
+                                    const onchangeFunc = isEdit ? 'toggleEditSections' : 'toggleAddSections';
+                                    
+                                    const departmentGroup = document.createElement('div');
+                                    departmentGroup.className = 'department-group';
+                                    departmentGroup.innerHTML = `
+                                        <label class="inline-flex items-center font-medium">
+                                            <input type="checkbox" name="departments" value="${dept.name}" class="rounded text-blue-600 department-checkbox" onchange="${onchangeFunc}('${dept.name}', this.checked)">
+                                            <span class="ml-2 text-sm">${dept.name}</span>
+                                        </label>
+                                        <div id="${prefix}-sections-${dept.name}" class="ml-6 mt-2 grid grid-cols-3 gap-2 hidden">
+                                            <!-- Sections will be loaded dynamically -->
+                                        </div>
+                                    `;
+                                    container.appendChild(departmentGroup);
+                                });
+                            }
+                    
+                            // Function to switch between dashboard views and update active state
+                            function switchView(viewName, clickedButton) {
+                                const views = document.querySelectorAll('#content-area section');
+                                const navButtons = document.querySelectorAll('.sidebar-link');
+                    
+                                views.forEach(view => {
+                                    view.classList.add('hidden');
+                                });
+                    
+                                const selectedView = document.getElementById(`view-${viewName}`);
+                                if (selectedView) {
+                                    selectedView.classList.remove('hidden');
+                                }
+                    
+                                navButtons.forEach(btn => {
+                                    btn.classList.remove('active');
+                                    // Reset manual styles
+                                    btn.style.backgroundColor = ''; 
+                                    btn.style.color = '';
+                                    btn.style.fontWeight = '';
+                                    btn.style.borderLeft = '';
+                                    btn.style.paddingLeft = '';
+                    
+                                    // Restore default hover classes
+                                    btn.classList.add('text-gray-800', 'hover:bg-blue-100', 'hover:text-blue-700', 'dark:text-gray-100', 'dark:hover:bg-blue-900/50');
+                                });
+                    
+                                if (clickedButton) {
+                                    clickedButton.classList.add('active');
+                                    clickedButton.classList.remove('text-gray-800', 'hover:bg-blue-100', 'hover:text-blue-700', 'dark:text-gray-100', 'dark:hover:bg-blue-900/50');
+                    
+                                    // Apply fixed active styling
+                                    clickedButton.style.backgroundColor = '#3660d1'; 
+                                    clickedButton.style.color = '#ffffff';
+                                    clickedButton.style.fontWeight = '600';
+                                    clickedButton.style.borderLeft = '4px solid #ffffff';
+                                    clickedButton.style.paddingLeft = 'calc(1rem - 4px)';
+                                }
+                                
+                                // Load departments table when switching to departments view
+                                if (viewName === 'departments') {
+                                    loadDepartmentsTable();
+                                }
+            
+                                // Close sidebar on mobile after selection
+                                if (window.innerWidth < 768) {
+                                    document.getElementById('sidebar').classList.add('hidden');
+                                }
+                            }
+                            
+                            // Function to switch tabs in Program Monitoring
+                            function switchTab(viewId, tabName, clickedButton) {
+                                const tabContents = document.querySelectorAll(`#${viewId} div[id^="${viewId}_"]`);
+                                const tabButtons = document.querySelectorAll(`#${viewId} .tab-button`);
+            
+                                tabContents.forEach(content => content.classList.add('hidden'));
+                                document.getElementById(`${viewId}_${tabName}`).classList.remove('hidden');
+                                
+                                tabButtons.forEach(btn => btn.classList.remove('active'));
+                                if (clickedButton) {
+                                    clickedButton.classList.add('active');
+                                }
+                            }
+            
+            
+                            // Handles activation, deactivation, and other actions via fetch POST requests
+                            function handleAction(actionName, url, confirmMsg, payload = {}) {
+                                if (!confirm(`Are you sure you want to ${confirmMsg}?`)) {
+                                    return;
+                                }
+            
+                                const options = {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    credentials: 'include',
+                                };
+            
+                                if (Object.keys(payload).length > 0) {
+                                    options.body = JSON.stringify(payload);
+                                }
+                                
+                                console.log(`Sending action: ${actionName}`);
+            
+                                fetch(url, options) 
+                                    .then(response => response.json()) // Always expect JSON now
+                                    .then(data => {
+                                        if (data.status === 'success') {
+                                            alert('✅ ' + data.message);
+                                            // Only update global status if it's explicitly returned
+                                            if (data.global_survey_active !== undefined) {
+                                                updateSystemStatusDisplay(data.global_survey_active);
+                                            }
+                                            // For other handleAction uses, a full page reload might still be needed
+                                            // if the UI changes are complex and not covered by specific dynamic updates.
+                                            // For now, if no specific global_survey_active is returned, assume a broader UI refresh is needed.
+                                            if (actionName === 'generate_results') { // Example for actions that need full reload
+                                                window.location.reload();
+                                            }
+                                        } else {
+                                            alert('❌ Error: ' + (data.message || 'An unknown error occurred.'));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Network error:', error);
+                                        alert('❌ Network error occurred.');
+                                    });
+                            }
+            
+                            function handleLogout() {
+                                 handleAction('logout', "{{ url_for('auth.logout') }}", 'Logout');
+                            }
+
+                            function handleRankingPost(staffType) {
+                                if (!confirm(`Are you sure you want to post ${staffType} staff rankings? This will make them visible to students.`)) {
+                                    return;
+                                }
+
+                                fetch('{{ url_for("views.post_rankings") }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ staff_type: staffType }),
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        document.getElementById('rankingAlertMessage').textContent = `Rankings for ${staffType} staff have been posted.`;
+                                        document.getElementById('rankingAlertModal').classList.remove('hidden');
+                                        setTimeout(() => window.location.reload(), 2000);
+                                    } else {
+                                        document.getElementById('rankingAlertMessage').textContent = `Error: ${data.message || 'An unknown error occurred.'}`;
+                                        document.getElementById('rankingAlertModal').classList.remove('hidden');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error posting rankings:', error);
+                                    document.getElementById('rankingAlertMessage').textContent = 'A network error occurred. Please try again.';
+                                    document.getElementById('rankingAlertModal').classList.remove('hidden');
+                                });
+                            }
+            
+                            // --- Question Modal Functions ---
+                            function openAddQuestionModal() {
+                                document.getElementById('addQuestionModal').classList.remove('hidden');
+                            }
+                            function closeAddQuestionModal() {
+                                document.getElementById('addQuestionModal').classList.add('hidden');
+                            }
+                            function openEditQuestionModal(id, criteria, text) {
+                                const form = document.getElementById('editQuestionForm');
+                                form.action = `/edit_question/${id}`;
+                                document.getElementById('edit_question_id').value = id;
+                                document.getElementById('edit_criteria').value = criteria;
+                                document.getElementById('edit_question_text').value = text;
+                                document.getElementById('editQuestionModal').classList.remove('hidden');
+                            }
+                            function closeEditQuestionModal() {
+                                document.getElementById('editQuestionModal').classList.add('hidden');
+                            }
+                            
+                            // --- TEACHER MODAL FUNCTIONS ---
+                            function openAddTeacherModal() {
+                                const addModal = document.getElementById('addTeacherModal');
+                                addModal.querySelector('input[name="teacher_id"]').value = 'new';
+                                
+                                // Load current departments and update form
+                                fetch('/api/departments')
+                                    .then(response => response.json())
+                                    .then(departments => {
+                                        updateDepartmentCheckboxes('departments-container', departments);
+                                        addModal.classList.remove('hidden');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error loading departments:', error);
+                                        addModal.classList.remove('hidden');
+                                    });
+                            }
+                            function closeAddTeacherModal() {
+                                document.getElementById('addTeacherModal').classList.add('hidden');
+                            }
+                            function openEditTeacherModal(teacherId) {
+                                document.getElementById('teacher_id_edit').value = teacherId;
+            
+                                // Load current departments first, then teacher data
+                                fetch('/api/departments')
+                                    .then(response => response.json())
+                                    .then(departments => {
+                                        updateDepartmentCheckboxes('edit-departments-container', departments);
+                                        
+                                        // Now load teacher data
+                                        return fetch(`/api/teacher/${teacherId}`);
+                                    })
+                                    .then(response => response.json())
+                                    .then(teacher => {
+                                        document.getElementById('teacher_name_edit').value = teacher.name;
+                                        document.getElementById('teacher_email_edit').value = teacher.email || '';
+            
+                                        // Handle departments - assuming teacher.departments contains department names
+                                        if (teacher.departments) {
+                                            teacher.departments.forEach(deptName => {
+                                                const checkbox = document.querySelector(`#editTeacherModal input[name="departments"][value="${deptName}"]`);
+                                                if (checkbox) {
+                                                    checkbox.checked = true;
+                                                    toggleEditSections(deptName, true);
+                                                }
+                                            });
+                                            
+                                            // Wait a moment for sections to load, then check the appropriate ones
+                                            setTimeout(() => {
+                                                if (teacher.sections) {
+                                                    teacher.sections.forEach(sectionValue => {
+                                                        const sectionCheckbox = document.querySelector(`#editTeacherModal input[name="sections"][value="${sectionValue}"]`);
+                                                        if (sectionCheckbox) {
+                                                            sectionCheckbox.checked = true;
+                                                        }
+                                                    });
+                                                }
+                                            }, 100);
+                                        }
+                                        
+                                        document.getElementById('editTeacherModal').classList.remove('hidden');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error loading teacher data:', error);
+                                        alert('Error loading teacher data. Please try again.');
+                                    });
+                            }
+                            function closeEditTeacherModal() {
+                                document.getElementById('editTeacherModal').classList.add('hidden');
+                            }
+                            
+                                                                                    function toggleEditSections(departmentId, isChecked) {
+                                                                                        const sectionsContainer = document.getElementById(`edit-sections-${departmentId}`);
+                                                                                        return new Promise((resolve) => {
+                                                                                            if (isChecked) {
+                                                                                                fetch(`/api/departments/${departmentId}/sections`)
+                                                                                                    .then(response => response.json())
+                                                                                                    .then(sections => {
+                                                                                                        sectionsContainer.innerHTML = ''; // Clear existing sections
+                                                                                                        sections.forEach(section => {
+                                                                                                            const label = document.createElement('label');
+                                                                                                            label.className = 'inline-flex items-center';
+                                                                                                            label.innerHTML = `
+                                                                                                                <input type="checkbox" name="sections" value="${section.id}" class="rounded section-checkbox" data-department="${departmentId}">
+                                                                                                                <span class="ml-2 text-sm">${section.name}</span>
+                                                                                                            `;
+                                                                                                            sectionsContainer.appendChild(label);
+                                                                                                        });
+                                                                                                        sectionsContainer.classList.remove('hidden');
+                                                                                                        resolve();
+                                                                                                    });
+                                                                                            } else {
+                                                                                                sectionsContainer.classList.add('hidden');
+                                                                                                sectionsContainer.innerHTML = '';
+                                                                                                resolve();
+                                                                                            }
+                                                                                        });
+                                                                                    }                                        
+                                                        function toggleAddSections(departmentName, isChecked) {
+                                                            const sectionsContainer = document.getElementById(`add-sections-${departmentName}`);
+                                                            if (isChecked) {
+                                                                getDepartmentSections(departmentName).then(sections => {
+                                                                    sectionsContainer.innerHTML = '';
+                                                                    sections.forEach(section => {
+                                                                        const label = document.createElement('label');
+                                                                        label.className = 'inline-flex items-center';
+                                                                        label.innerHTML = `
+                                                                            <input type="checkbox" name="sections" value="${departmentName}-${section}" class="rounded section-checkbox" data-department="${departmentName}">
+                                                                            <span class="ml-2 text-sm">${section}</span>
+                                                                        `;
+                                                                        sectionsContainer.appendChild(label);
+                                                                    });
+                                                                    sectionsContainer.classList.remove('hidden');
+                                                                });
+                                                            } else {
+                                                                sectionsContainer.classList.add('hidden');
+                                                                sectionsContainer.innerHTML = '';
+                                                                // Uncheck all sections for this department
+                                                                sectionsContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                                                            }
+                                                        }
+                                                        
+                                                        function toggleEditSections(departmentName, isChecked) {
+                                                            const sectionsContainer = document.getElementById(`edit-sections-${departmentName}`);
+                                                            if (isChecked) {
+                                                                getDepartmentSections(departmentName).then(sections => {
+                                                                    sectionsContainer.innerHTML = '';
+                                                                    sections.forEach(section => {
+                                                                        const label = document.createElement('label');
+                                                                        label.className = 'inline-flex items-center';
+                                                                        label.innerHTML = `
+                                                                            <input type="checkbox" name="sections" value="${departmentName}-${section}" class="rounded section-checkbox" data-department="${departmentName}">
+                                                                            <span class="ml-2 text-sm">${section}</span>
+                                                                        `;
+                                                                        sectionsContainer.appendChild(label);
+                                                                    });
+                                                                    sectionsContainer.classList.remove('hidden');
+                                                                });
+                                                            } else {
+                                                                sectionsContainer.classList.add('hidden');
+                                                                sectionsContainer.innerHTML = '';
+                                                                // Uncheck all sections for this department
+                                                                sectionsContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                                                            }
+                                                        }
+                                                        
+                                                        function getDepartmentSections(departmentName) {
+                                                            // This function now fetches sections dynamically from the database
+                                                            return new Promise((resolve) => {
+                                                                fetch('/api/departments')
+                                                                    .then(response => response.json())
+                                                                    .then(departments => {
+                                                                        const dept = departments.find(d => d.name === departmentName);
+                                                                        const sections = dept ? dept.sections.map(s => s.name) : [];
+                                                                        resolve(sections);
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error('Error fetching sections:', error);
+                                                                        resolve([]);
+                                                                    });
+                                                            });
+                                                        }
+                                                        
+                                                        function validateTeachingStaff() {
+                                                            const staffType = document.getElementById('staff_type_selector').value;
+                                                            if (staffType === 'teaching') {
+                                                                const selectedDepartments = document.querySelectorAll('#teaching_fields input[name="departments"]:checked');
+                                                                const selectedSections = document.querySelectorAll('#teaching_fields input[name="sections"]:checked');
+                                                                
+                                                                if (selectedDepartments.length === 0) {
+                                                                    alert('Please select at least one department for teaching staff.');
+                                                                    return false;
+                                                                }
+                                                                
+                                                                if (selectedSections.length === 0) {
+                                                                    alert('Please select at least one section for teaching staff.');
+                                                                    return false;
+                                                                }
+                                                            }
+                                                            return true;
+                                                        }            
+                            function toggleStaffFields() {
+                                const staffType = document.getElementById('staff_type_selector').value;
+                                const teachingFields = document.getElementById('teaching_fields');
+                                const nonTeachingFields = document.getElementById('non_teaching_fields');
+                                const teachingNameInput = document.querySelector('#teaching_fields input[name="name"]');
+                                const nonTeachingNameInput = document.querySelector('#non_teaching_fields input[name="non_teaching_name"]');
+                                const teachingEmailInput = document.querySelector('#teaching_fields input[name="email"]');
+                                const nonTeachingEmailInput = document.querySelector('#non_teaching_fields input[name="email"]');
+            
+                                if (staffType === 'teaching') {
+                                    teachingFields.style.display = 'block';
+                                    nonTeachingFields.style.display = 'none';
+                                    teachingNameInput.required = true;
+                                    teachingEmailInput.required = true;
+                                    nonTeachingNameInput.required = false;
+                                    nonTeachingEmailInput.required = false;
+                                } else {
+                                    teachingFields.style.display = 'none';
+                                    nonTeachingFields.style.display = 'block';
+                                    // Hide all department sections for non-teaching staff
+                                    document.querySelectorAll('[id^="add-sections-"]').forEach(el => el.classList.add('hidden'));
+                                    // Clear all department and section selections
+                                    document.querySelectorAll('#teaching_fields input[type="checkbox"]').forEach(cb => cb.checked = false);
+                                    teachingNameInput.required = false;
+                                    teachingEmailInput.required = false;
+                                    nonTeachingNameInput.required = true;
+                                    nonTeachingEmailInput.required = true;
+                                }
+                            }
+            
+                            // --- Ranking Modal Functions ---
+                            function openEditRankingModal(id, name, score) {
+                                document.getElementById('ranking_staff_id').value = id;
+                                document.getElementById('ranking_staff_name').textContent = `Editing: ${name}`;
+                                document.getElementById('ranking_new_score').value = parseFloat(score).toFixed(2);
+                                document.getElementById('editRankingModal').classList.remove('hidden');
+                            }
+                            function closeEditRankingModal() {
+                                document.getElementById('editRankingModal').classList.add('hidden');
+                            }
+                            
+                            function submitRankingEdit() {
+                                const newScore = parseFloat(document.getElementById('ranking_new_score').value);
+                                const staffName = document.getElementById('ranking_staff_name').textContent.replace('Editing: ', '');
+            
+                                if (isNaN(newScore) || newScore < 1.00 || newScore > 5.00) {
+                                    document.getElementById('rankingAlertMessage').textContent = "Please enter a valid score between 1.00 and 5.00.";
+                                    document.getElementById('rankingAlertModal').classList.remove('hidden');
+                                    return;
+                                }
+                                
+                                // NOTE: In this demo, this update is only local (in JavaScript).
+                                // To make it permanent, you would need a new Flask route to save the override score to the DB.
+                                
+                                document.getElementById('rankingAlertMessage').textContent = `Score for ${staffName} updated to ${newScore.toFixed(2)} in the interface. Click 'Post Final Ranking' to save permanently.`;
+                                document.getElementById('rankingAlertModal').classList.remove('hidden');
+                                closeEditRankingModal();
+                                
+                                // Reload the entire page to reflect the new, temporary score from the server query.
+                                window.location.reload(); 
+                            }
+            
+                            
+                            // Initialize the default view and theme when the page loads
+                            document.addEventListener('DOMContentLoaded', () => {
+            
+                                // View Initialization (Original switchView logic)
+                                const urlHash = window.location.hash.substring(1); 
+                                const defaultView = urlHash || 'dashboard';
+            
+                                // Find the correct button based on the hash
+                                const defaultButton = document.querySelector(`.sidebar-link[data-view="${defaultView}"]`);
+                                if (defaultButton) {
+                                    switchView(defaultView, defaultButton);
+                                } else {
+                                    // Default to dashboard if hash is bad
+                                    switchView('dashboard', document.querySelector('.sidebar-link[data-view="dashboard"]'));
+                                }
+                                
+                                // Set default tab for Program Monitoring
+                                if (document.querySelector('#view-reports .tab-button')) { 
+                                    const firstProgram = '{{ mock_programs[0]|lower }}';
+                                    switchTab('reports', firstProgram, document.querySelector(`#view-reports .tab-button[data-tab='${firstProgram}']`)); 
+                                }
+                                
+                                // Load departments table if on departments view
+                                if (defaultView === 'departments') {
+                                    loadDepartmentsTable();
+                                }
+                                
+                                // Mobile menu toggle
+                                document.getElementById('mobile-menu-button').addEventListener('click', () => {
+                                    document.getElementById('sidebar').classList.toggle('hidden');
+                                });
+            
+                                // Fetch data and render charts using new CSV-based API
+                                if (document.getElementById('completionPieChart')) {
+                                    fetch('/api/completion-stats')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            renderCompletionCharts(data);
+                                        })
+                                        .catch(error => console.error('Error fetching dashboard stats:', error));
+                                }
+                            });
+                            
+                            // New function to handle sending reminders with CSV integration
+                            function sendReminders() {
+                                const programFilter = document.getElementById('program-filter').value;
+                                const payload = {};
+                                if (programFilter) {
+                                    payload.program_name = programFilter;
+                                }
+                                
+                                if (!confirm('Send reminder emails to students who have not completed their evaluations?')) {
+                                    return;
+                                }
+                                
+                                fetch('/send-reminders', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(payload)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert(`✅ ${data.message}`);
+                                    } else if (data.status === 'info') {
+                                        alert(`ℹ️ ${data.message}`);
+                                    } else if (data.status === 'warning') {
+                                        alert(`⚠️ ${data.message}`);
+                                    } else {
+                                        alert(`❌ Error: ${data.message}`);
+                                    }
+                                    
+                                    // Refresh the charts to show updated completion stats
+                                    fetch('/api/completion-stats')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            renderCompletionCharts(data);
+                                        })
+                                        .catch(error => console.error('Error refreshing stats:', error));
+                                })
+                                .catch(error => {
+                                    console.error('Error sending reminders:', error);
+                                    alert('❌ Network error occurred while sending reminders.');
+                                });
+                            }
+                            
+                            // Function to sync CSV student data to database
+                            function syncCsvStudents() {
+                                if (!confirm('Sync CSV student data to database? This will create login accounts for new students.')) {
+                                    return;
+                                }
+                                
+                                fetch('/sync-csv-students', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert(`✅ ${data.message}`);
+                                    } else if (data.status === 'info') {
+                                        alert(`ℹ️ ${data.message}`);
+                                    } else {
+                                        alert(`❌ Error: ${data.message}`);
+                                    }
+                                    
+                                    // Refresh completion stats
+                                    fetch('/api/completion-stats')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            renderCompletionCharts(data);
+                                        })
+                                        .catch(error => console.error('Error refreshing stats:', error));
+                                })
+                                .catch(error => {
+                                    console.error('Error syncing CSV:', error);
+                                    alert('❌ Network error occurred while syncing student data.');
+                                });
+                            }
+                            
+                            // Survey activation/deactivation functions
+                            function activateSurvey(surveyId, buttonElement) {
+                                if (!confirm('Activate this survey? This will deactivate all other surveys of the same type.')) {
+                                    return;
+                                }
+                                
+                                fetch(`/survey/activate/${surveyId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    credentials: 'include',
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') { 
+                                        alert('✅ Survey activated successfully!');
+                                        window.location.reload();
+                                    } else {
+                                        alert('❌ Error: ' + (data.message || 'An unknown error occurred.'));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('❌ Network error occurred.');
+                                });
+                            }
+                            
+                            function deactivateSurvey(surveyId, buttonElement) {
+                                if (!confirm('Deactivate this survey?')) {
+                                    return;
+                                }
+                                
+                                fetch(`/survey/deactivate/${surveyId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    credentials: 'include',
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') { 
+                                        alert('✅ Survey deactivated successfully!');
+                                        window.location.reload();
+                                    } else {
+                                        alert('❌ Error: ' + (data.message || 'An unknown error occurred.'));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('❌ Network error occurred.');
+                                });
+                            }
+
+                            // New helper function to update the global System Status display
+                            function updateSystemStatusDisplay(isActive) {
+                                const statusContainer = document.querySelector('.flex.items-center.text-sm.text-gray-600 > span:last-child');
+                                if (statusContainer) {
+                                    const statusDot = statusContainer.querySelector('.w-2.h-2.rounded-full');
+                                    const statusText = statusContainer.querySelector('span.font-medium');
+
+                                    if (isActive) {
+                                        statusDot.classList.remove('bg-red-500');
+                                        statusDot.classList.add('bg-green-500');
+                                        statusText.classList.remove('text-red-600');
+                                        statusText.classList.add('text-green-600');
+                                        statusText.textContent = 'Survey Active';
+                                    } else {
+                                        statusDot.classList.remove('bg-green-500');
+                                        statusDot.classList.add('bg-red-500');
+                                        statusText.classList.remove('text-green-600');
+                                        statusText.classList.add('text-red-600');
+                                        statusText.textContent = 'Survey Inactive';
+                                    }
+                                }
+                            }
+
+            
+                            function renderCompletionCharts(data) {
+                                if (!data || !Array.isArray(data)) return;
+                                const programs = data.map(d => d.name || d.program);
+                                const completed = data.map(d => d.completed);
+                                const pending = data.map(d => d.pending);
+                                
+                                const totalCompleted = completed.reduce((a, b) => a + b, 0);
+                                const totalPending = pending.reduce((a, b) => a + b, 0);
+            
+                                // Pie Chart
+                                const pieCtx = document.getElementById('completionPieChart').getContext('2d');
+                                new Chart(pieCtx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['Completed', 'Pending'],
+                                        datasets: [{
+                                            data: [totalCompleted, totalPending],
+                                            backgroundColor: ['#10B981', '#F59E0B'],
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        plugins: {
+                                            legend: { position: 'top' }
+                                        }
+                                    }
+                                });
+            
+                                // Bar Chart
+                                const barCtx = document.getElementById('completionBarChart').getContext('2d');
+                                new Chart(barCtx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: programs,
+                                        datasets: [
+                                            {
+                                                label: 'Completed',
+                                                data: completed,
+                                                backgroundColor: '#10B981',
+                                            },
+                                            {
+                                                label: 'Pending',
+                                                data: pending,
+                                                backgroundColor: '#F59E0B',
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            x: { stacked: true },
+                                            y: { stacked: true, beginAtZero: true }
+                                        },
+                                        plugins: {
+                                            legend: { position: 'top' }
+                                        }
+                                    }
+                                });
+                            }
+                            
+                            // --- Settings Functions ---
+                            function openChangePhotoModal() {
+                                document.getElementById('changePhotoModal').classList.remove('hidden');
+                            }
+                            
+                            function closeChangePhotoModal() {
+                                document.getElementById('changePhotoModal').classList.add('hidden');
+                                document.getElementById('photoForm').reset();
+                            }
+                            
+                            function uploadPhoto(event) {
+                                event.preventDefault();
+                                const fileInput = document.getElementById('photoFile');
+                                
+                                if (!fileInput.files[0]) {
+                                    alert('Please select a photo to upload.');
+                                    return;
+                                }
+                                
+                                const formData = new FormData();
+                                formData.append('photo', fileInput.files[0]);
+                                
+                                fetch('/admin/update-photo', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ Profile photo updated successfully!');
+                                        closeChangePhotoModal();
+                                        // Refresh the page to show new photo
+                                        window.location.reload();
+                                    } else {
+                                        alert('❌ Error: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error uploading photo:', error);
+                                    alert('❌ Error uploading photo.');
+                                });
+                            }
+                            
+                            function updateProfile(event) {
+                                event.preventDefault();
+                                const formData = new FormData(event.target);
+                                
+                                fetch('/admin/update-profile', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ Profile updated successfully!');
+                                    } else {
+                                        alert('❌ Error: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating profile:', error);
+                                    alert('❌ Error updating profile.');
+                                });
+                            }
+                            
+                            function updatePassword(event) {
+                                event.preventDefault();
+                                const currentPassword = document.getElementById('currentPassword').value;
+                                const newPassword = document.getElementById('newPassword').value;
+                                const confirmPassword = document.getElementById('confirmPassword').value;
+                                
+                                if (newPassword !== confirmPassword) {
+                                    alert('New password and confirmation do not match.');
+                                    return;
+                                }
+                                
+                                if (newPassword.length < 6) {
+                                    alert('New password must be at least 6 characters long.');
+                                    return;
+                                }
+                                
+                                const formData = new FormData();
+                                formData.append('current_password', currentPassword);
+                                formData.append('new_password', newPassword);
+                                
+                                fetch('/admin/update-password', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert('✅ Password updated successfully!');
+                                        document.getElementById('passwordForm').reset();
+                                    } else {
+                                        alert('❌ Error: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating password:', error);
+                                    alert('❌ Error updating password.');
+                                });
+                            }
+                            
+                            function saveAllChanges() {
+                                // Trigger profile form submission
+                                const profileForm = document.getElementById('profileForm');
+                                updateProfile({ target: profileForm, preventDefault: () => {} });
+                            }
+                            
+                            function cancelChanges() {
+                                // Reset forms to original values
+                                document.getElementById('firstName').value = '{{ admin_info.first_name }}';
+                                document.getElementById('lastName').value = '{{ admin_info.last_name }}';
+                                document.getElementById('email').value = '{{ admin_info.email }}';
+                                document.getElementById('passwordForm').reset();
+                                alert('Changes cancelled.');
+                            }
+                        </script>
+                    </body>
+                    </html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | Evaluation</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for fonts and active state */
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+        }
+        /* Styling for the active sidebar link (Uses fixed color for high visibility) */
+        .sidebar-link.active {
+            background-color: #3660d1;
+            color: #ffffff;
+            font-weight: 600;
+            border-left: 4px solid #ffffff;
+            padding-left: calc(1rem - 4px);
+        }
+        
+        /* 2. ADD DARK MODE CSS TO ENSURE BODY BACKGROUND/TEXT IS CONTROLLED */
+        .app-container {
+            /* Fallback Light Mode Background */
+            background-color: #f3f4f6; 
+        }
+        .dark .app-container {
+            /* Dark Mode Override Background */
+            background-color: #111827; /* dark:bg-gray-900 */
+        }
+    </style>
+</head>
+<!-- UPDATED: Added general text and app-container classes to the body tag -->
+<body class="app-container text-gray-900">
+
+    <!-- Sidebar: Student Profile and Navigation -->
+    <aside id="sidebar" class="w-64 flex-shrink-0 bg-white text-gray-800 border-r border-gray-200 p-4 relative overflow-y-auto hidden md:block">
+        <div class="text-xl font-bold mb-8 text-gray-900">Student Portal</div>
+        
+        <!-- Student Profile Card -->
+        <div class="mb-8 p-3 bg-blue-50 rounded-lg border border-blue-100">
+            <p class="text-sm font-semibold text-gray-700">{{ profile.name }}</p>
+            <p class="text-xs text-blue-600 font-medium">{{ profile.program }}</p>
+            <p class="text-xs text-gray-500">{{ profile.section }}</p>
+        </div>
+
+        <p class="text-xs font-semibold uppercase text-gray-500 mb-4">EVALUATION</p>
+        <nav class="space-y-2">
+            
+            <button onclick="switchView('evaluation', this)" class="sidebar-link active w-full text-left flex items-center p-3 rounded-lg text-sm font-medium hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 focus:outline-none" data-view="evaluation">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path></svg>
+                My Evaluation
+            </button>
+            <button onclick="switchView('ranking', this)" class="sidebar-link w-full text-left flex items-center p-3 rounded-lg text-sm font-medium hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 focus:outline-none" data-view="ranking">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-6h2v6zm2 0h2v-6h-2v6zm2-8h-2V7h2v2z"></path></svg>
+                View Staff Rankings
+            </button>
+        </nav>
+
+        <div class="absolute bottom-4 left-4 right-4 pt-4 border-t border-gray-200">
+            <a href="{{ url_for('auth.logout') }}" class="w-full text-left flex items-center p-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors duration-200 focus:outline-none">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-3m0-4V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-white p-4 border-b border-gray-200 flex justify-between items-center shadow-sm">
+            <h1 class="text-lg font-semibold text-gray-800">P G P C Evaluation</h1>
+            <div class="text-sm font-medium text-gray-700 flex items-center space-x-4">
+                Welcome, {{ profile.name }}
+            </div>
+        </header>
+
+        <main id="content-area" class="flex-grow p-4 md:p-8 overflow-y-auto space-y-6">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-2">
+                    {% for category, message in messages %}
+                        <div class="p-3 rounded-lg shadow-sm text-sm 
+                            {% if category == 'success' %} bg-green-100 text-green-700 border border-green-200
+                            {% elif category == 'warning' %} bg-orange-100 text-orange-700 border border-orange-200
+                            {% elif category == 'error' %} bg-red-100 text-red-700 border border-red-200
+                            {% else %} bg-blue-100 text-blue-700 border border-blue-200 {% endif %}
+                            " role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- EVALUATION VIEW -->
+            <section id="view-evaluation" class="space-y-6">
+                <h2 class="text-3xl font-extrabold text-gray-800">Teacher Evaluation</h2>
+                <p class="text-gray-600">Please evaluate the teaching and non-teaching staff assigned to your section ({{ profile.section }}). Your feedback is confidential.</p>
+
+                {% if not my_teachers %}
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg" role="alert">
+                    <p class="font-bold">No Teachers Found</p>
+                    <p>No teachers are currently assigned to your section ({{ profile.section }}). Please contact your Dean if this is incorrect.</p>
+                </div>
+                {% elif not show_form %}
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg" role="alert">
+                    <p class="font-bold">Survey Closed</p>
+                    <p>{{ survey_closed_message }}</p>
+                </div>
+                {% elif evaluation_complete %}
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg" role="alert">
+                    <p class="font-bold">Evaluation Completed</p>
+                    <p>Thank you for completing your evaluation. Your responses have been submitted successfully.</p>
+                </div>
+                {% else %}
+                {% if survey_closed_message %}
+                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-6" role="alert">
+                    <p class="font-bold">Review Mode</p>
+                    <p>{{ survey_closed_message }}</p>
+                </div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('views.submit_evaluation') }}" class="space-y-8">
+                    <input type="hidden" name="student_id" value="{{ profile.id }}">
+
+                    {% for teacher in my_teachers %}
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                        <div class="flex items-center mb-6">
+                            <img src="{{ teacher.image_url }}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/333333/ffffff?text=PG'" class="w-16 h-16 rounded-full mr-4 object-cover">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">{{ teacher.name }}</h3>
+                                <p class="text-sm text-gray-600">{{ profile.section }}</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Evaluation Criteria (1=Poor, 5=Excellent)</h4>
+                            {% for q in questions %}
+                            <div class="p-3 border rounded-lg bg-gray-50">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ q.text }} ({{ q.criteria }})</label>
+                                <div class="flex flex-wrap gap-4 mt-1">
+                                    {% for score in [5, 4, 3, 2, 1] %}
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        {% set answer_value = none %}
+                                        {% if review_mode and previous_answers %}
+                                            {% for answer in previous_answers %}
+                                                {% if answer.question_identifier == q.id and answer.response_value.split('|')[1] == teacher.id|string %}
+                                                    {% set answer_value = answer.response_value.split('|')[0]|int %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                        <input type="radio" 
+                                               {% if not can_submit %}disabled{% else %}required{% endif %} 
+                                               class="form-radio h-4 w-4 text-blue-600" 
+                                               name="score_{{ teacher.id }}_{{ q.id }}" 
+                                               value="{{ score }}"
+                                               {% if answer_value == score %}checked{% endif %}>
+                                        <span class="ml-2 text-sm text-gray-700">{{ score }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Comments and Suggestions Section -->
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">💬 Comments and Suggestions (Optional)</h4>
+                        <p class="text-sm text-gray-600 mb-4">You may provide additional feedback or suggestions for any of the staff members evaluated above. This is completely optional.</p>
+                        
+                        {% for teacher in my_teachers %}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Comments for {{ teacher.name }}:</label>
+                            {% set previous_comment = '' %}
+                            {% if review_mode and previous_comments %}
+                                {% for comment in previous_comments %}
+                                    {% if comment.teacher_id == teacher.id %}
+                                        {% set previous_comment = comment.comment_text %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <textarea 
+                                name="comment_{{ teacher.id }}" 
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                rows="3" 
+                                placeholder="Optional: Share your thoughts, suggestions, or feedback about {{ teacher.name }}..."
+                                {% if not can_submit %}disabled{% endif %}>{{ previous_comment }}</textarea>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if can_submit %}
+                    <button type="submit" class="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors shadow-lg">
+                        Submit Final Evaluation ({{ my_teachers | length }} Teachers)
+                    </button>
+                    {% endif %}
+                </form>
+                {% endif %}
+            </section>
+
+            <!-- RANKING VIEW -->
+            <section id="view-ranking" class="bg-white p-6 rounded-lg shadow-sm hidden">
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-6">Staff Performance Rankings</h2>
+                <p class="text-gray-600 mb-4">View the officially posted rankings for teaching and non-teaching staff.</p>
+                
+                {% if rankings_posted and published_rankings %}
+                <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6" role="alert">
+                    <p class="font-bold">Ranking Status: Posted</p>
+                    <p>The official evaluation rankings have been published.</p>
+                </div>
+                
+                <p class="text-lg font-semibold text-gray-800 mb-3">Official Staff Rankings</p>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evaluation Score</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for staff in published_rankings %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-lg font-bold text-blue-600">{{ staff.rank }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ staff.name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ staff.department }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800">{{ staff.score }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-6" role="alert">
+                    <p class="font-bold">Ranking Status: Not Yet Posted</p>
+                    <p>The administration has not yet finalized and posted the current evaluation rankings.</p>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // === JAVASCRIPT LOGIC ===
+
+        function switchView(viewName, clickedButton) {
+            const views = document.querySelectorAll('#content-area section');
+            const navButtons = document.querySelectorAll('.sidebar-link');
+
+            views.forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            const selectedView = document.getElementById(`view-${viewName}`);
+            if (selectedView) {
+                selectedView.classList.remove('hidden');
+            }
+
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                // The active styling is handled by CSS in the <style> block and the JS below
+            });
+
+            if (clickedButton) {
+                // Manually apply active styling since Tailwind dark:hover styles interfere with fixed active state
+                clickedButton.classList.add('active');
+                clickedButton.style.backgroundColor = '#3b82f6'; 
+                clickedButton.style.color = '#ffffff';
+                clickedButton.style.fontWeight = '600';
+                clickedButton.style.borderLeft = '4px solid #ffffff';
+                clickedButton.style.paddingLeft = 'calc(1rem - 4px)';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // View Initialization (Original switchView logic)
+            const defaultButton = document.querySelector('.sidebar-link[data-view="evaluation"]');
+            if (defaultButton) {
+                switchView('evaluation', defaultButton);
+            }
+        });
+    </script>
+</body>
+</html>

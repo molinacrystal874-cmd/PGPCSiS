@@ -1,0 +1,50 @@
+[
+  {
+    "id": "6bf4206a-6f55-4ad6-854f-b916834347ae",
+    "name": "Lester Aliwalas",
+    "department": "BSCS",
+    "section": "BSCS-1C, BSCS 1B",
+    "email": "lester@gmail.com",
+    "image_url": "https://placehold.co/100x100/0e8a72/ffffff?text=LA"
+  },
+  {
+    "id": "73b0d97e-7fa0-4daf-95ad-d81c60885320",
+    "name": "Cristina Magnaye",
+    "department": "BSCS",
+    "section": "BSCS-1A",
+    "email": "lester@gmail.com",
+    "image_url": "https://placehold.co/100x100/308678/ffffff?text=CM"
+  },
+  {
+    "id": "4adb8c1a-18e4-430c-ac4c-8b4594545747",
+    "name": "Jenny Morales",
+    "department": "BSCS",
+    "section": "BSCS-1A",
+    "email": "JEN@gmail.com",
+    "image_url": "https://placehold.co/100x100/529c22/ffffff?text=JM"
+  },
+  {
+    "id": "af224136-e89f-40d4-b388-bf73134b4cf9",
+    "name": "Kervin Mandurugas",
+    "department": "BSMA",
+    "section": "BSMA-1B",
+    "email": "manduragas@gmail.com",
+    "image_url": "https://placehold.co/100x100/172a74/ffffff?text=KM"
+  },
+  {
+    "id": "694fd511-663a-4e9e-b372-7b25da28381c",
+    "name": "Cassandra",
+    "department": "BSCS",
+    "section": "BSCS-1A",
+    "email": "admin1@gmail.com",
+    "image_url": "https://placehold.co/100x100/128566/ffffff?text=C"
+  },
+  {
+    "id": "2a108ee9-cccb-46ca-8334-0eafd2e0062f",
+    "name": "Gara Cuentas",
+    "department": "BSMA",
+    "section": "BSMA-1B",
+    "email": "gara@gmail.com",
+    "image_url": "https://placehold.co/100x100/dc095e/ffffff?text=GC"
+  }
+]

@@ -1,0 +1,12 @@
+<!-- Shared footer partial -->
+<footer class="bg-gray-800 text-white p-6 mt-auto shadow-inner">
+    <div class="container mx-auto text-center text-sm">
+        &copy; <span id="current-year">2025</span> SIS Portal. All rights reserved. | <a href="#" class="hover:text-sis-yellow transition">Privacy Policy</a> | <a href="#" class="hover:text-sis-yellow transition">Contact Support</a>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const el = document.getElementById('current-year');
+        if (el) el.textContent = new Date().getFullYear();
+    });
+</script>
